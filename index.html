@@ -11,7 +11,13 @@
   body { margin:0; min-height:100vh; display:grid; place-items:center; background:#101a18; color:var(--ink); font-family:ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
   body::before { content:""; position:fixed; inset:0; pointer-events:none; background:radial-gradient(ellipse at 50% 30%,#263a2a66,transparent 65%); }
   main { width:min(880px,100%); padding:42px 40px 30px; position:relative; }
-  header { display:flex; justify-content:space-between; align-items:center; margin-bottom:25px; gap:16px; }
+  header { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; margin-bottom:25px; gap:16px; }
+  .header-actions { display:flex; align-items:center; gap:10px; margin-left:auto; }
+  .language-switch { display:flex; padding:3px; border:1px solid #3e5143; border-radius:9px; background:#1a2923; }
+  .language-switch button { padding:7px 10px; border:0; border-radius:6px; background:transparent; color:var(--muted); font-size:12px; }
+  .language-switch button[aria-pressed="true"] { background:var(--lime); color:#22321c; font-weight:700; }
+  html[lang="zh-Hant"] h2 { font-family:"PingFang TC","Microsoft JhengHei",system-ui,sans-serif; font-size:clamp(30px,6vw,54px); line-height:1.25; letter-spacing:0; }
+  html[lang="zh-Hant"] .eyebrow { letter-spacing:2px; }
   .brand { display:flex; align-items:center; gap:12px; }
   .brand-icon { width:39px; height:39px; border:1px solid #4a6047; border-radius:12px; display:grid; place-items:center; color:var(--lime); font-size:24px; transform:rotate(-6deg); }
   h1 { margin:0; font-size:20px; letter-spacing:-.6px; font-weight:750; }
@@ -62,14 +68,20 @@
 <body>
 <main>
   <header>
-    <div class="brand"><div class="brand-icon" aria-hidden="true">✦</div><div><h1>Goblin Gold</h1><p>A tiny forest arcade</p></div></div>
-    <button class="restart" id="restart" type="button"><span aria-hidden="true">↻</span> Restart</button>
+    <div class="brand"><div class="brand-icon" aria-hidden="true">✦</div><div><h1 data-i18n="brand">Goblin Gold</h1><p data-i18n="subtitle">A tiny forest arcade</p></div></div>
+    <div class="header-actions">
+      <div class="language-switch" role="group" aria-label="Language" data-i18n-aria="languageLabel">
+        <button id="languageEnglish" type="button" lang="en" aria-pressed="true">Eng</button>
+        <button id="languageChinese" type="button" lang="zh-Hant" aria-pressed="false">中文</button>
+      </div>
+      <button class="restart" id="restart" type="button"><span aria-hidden="true">↻</span><span data-i18n="restart">Restart</span></button>
+    </div>
   </header>
   <div class="frame">
-    <canvas id="game" width="800" height="500" tabindex="0" aria-label="Goblin Gold game. Move with left and right arrows or A and D. Catch gold coins and avoid rocks. Press P to pause."></canvas>
+    <canvas id="game" width="800" height="500" tabindex="0" data-i18n-aria="canvasLabel" aria-label="Goblin Gold game. Move with left and right arrows or A and D. Catch coffee and avoid assignment papers. Press P to pause."></canvas>
     <div class="hud">
-      <div class="stat"><span class="stat-label">GOLD</span><span class="score" id="score">0</span></div>
-      <div class="stat"><span class="stat-label">LIVES</span><span class="lives" id="lives" aria-label="3 lives">♥♥♥</span></div>
+      <div class="stat"><span class="stat-label" data-i18n="scoreLabel">SCORE</span><span class="score" id="score">0</span></div>
+      <div class="stat"><span class="stat-label" data-i18n="livesLabel">LIVES</span><span class="lives" id="lives" aria-label="3 lives">♥♥♥</span></div>
     </div>
     <div class="overlay" id="overlay">
       <div class="intro">
@@ -80,11 +92,11 @@
         <p class="hint" id="hint">← → or A / D to move · P to pause</p>
       </div>
     </div>
-    <div class="pause" id="pause" hidden><div><strong>Taking a breather.</strong><button id="resume" class="primary" type="button">Keep collecting →</button></div></div>
+    <div class="pause" id="pause" hidden><div><strong data-i18n="pauseTitle">Taking a breather.</strong><button id="resume" class="primary" type="button"><span data-i18n="resume">Keep collecting</span><span aria-hidden="true">→</span></button></div></div>
   </div>
-  <div class="bottom"><div class="instructions"><kbd>←</kbd><kbd>→</kbd><span>move</span><span style="margin:0 4px">/</span><kbd>P</kbd><span>pause</span></div><span><span class="dot"></span>One forest. Three chances.</span></div>
-  <div class="touch-controls" aria-label="Movement controls"><button id="left" type="button" aria-label="Move left">←</button><button id="right" type="button" aria-label="Move right">→</button></div>
-  <div class="legend"><span><span class="coin-key">●</span><b>Gold coins</b> +10</span><span><span class="rock-key">◆</span><b>Falling rocks</b> −1 life</span><span class="credit">Made for a little escape</span></div>
+  <div class="bottom"><div class="instructions"><kbd>←</kbd><kbd>→</kbd><span data-i18n="move">move</span><span style="margin:0 4px">/</span><kbd>P</kbd><span data-i18n="pause">pause</span></div><span><span class="dot"></span><span data-i18n="chances">One forest. Three chances.</span></span></div>
+  <div class="touch-controls" aria-label="Movement controls" data-i18n-aria="movementLabel"><button id="left" type="button" aria-label="Move left" data-i18n-aria="leftLabel">←</button><button id="right" type="button" aria-label="Move right" data-i18n-aria="rightLabel">→</button></div>
+  <div class="legend"><span><span class="coin-key">●</span><b data-i18n="coffee">Coffee</b> +10</span><span><span class="rock-key">◆</span><b data-i18n="assignments">Assignment papers</b> <span data-i18n="lifePenalty">−1 life</span></span><span class="credit" data-i18n="credit">Made for a little escape</span></div>
   <p class="sr-only" id="announcement" role="status" aria-live="polite"></p>
 </main>
 <script>
@@ -100,6 +112,74 @@
   const player = { x:400, y:ground, width:92, height:88, moving:0, hurtTimer:0, chewTimer:0 };
   function clampPlayer(x) { return Math.max(player.width/2, Math.min(W-player.width/2, x)); }
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const isTouch = window.matchMedia('(pointer:coarse)').matches;
+  const translations = {
+    en: {
+      title:'Goblin Gold — A tiny forest arcade', brand:'Goblin Gold', subtitle:'A tiny forest arcade',
+      languageLabel:'Language', restart:'Restart', scoreLabel:'SCORE', livesLabel:'LIVES',
+      eyebrow:'SMALL GOBLIN. BIG AMBITIONS.', headline:'A little mischief.<br>A lot of <em>coffee.</em>',
+      description:'The forest is feeling generous.<br>Catch the coffee. Dodge the assignments. Keep going.',
+      start:"Let's get greedy", hint:'← → or A / D to move · P to pause',
+      touchHint:'Drag in the forest or use the arrow buttons below',
+      pauseTitle:'Taking a breather.', resume:'Keep collecting', move:'move', pause:'pause',
+      chances:'One forest. Three chances.', coffee:'Coffee', assignments:'Assignment papers',
+      lifePenalty:'−1 life', credit:'Made for a little escape',
+      movementLabel:'Movement controls', leftLabel:'Move left', rightLabel:'Move right',
+      canvasLabel:'Goblin Gold game. Move with left and right arrows or A and D. Catch coffee and avoid assignment papers. Press P to pause.',
+      livesCount:'{count} lives', startAnnouncement:'Game started. Catch coffee for points and avoid assignment papers.',
+      coffeeAnnouncement:'Coffee collected. Score: {score}.', livesAnnouncement:'{count} lives remaining.',
+      overEyebrow:'TIME FOR A COFFEE BREAK.', overHeadline:'A well-earned <em>break.</em>',
+      overDescription:'You collected {score} points. Ready for another round?', replay:'Play again',
+      overHint:'Catch the coffee. Dodge the assignments.', overAnnouncement:'Game over. Final score: {score}.',
+      pauseAnnouncement:'Game paused.', resumeAnnouncement:'Game resumed.',
+      damageFeedback:'−1 life'
+    },
+    'zh-Hant': {
+      title:'哥布林尋寶 — 森林迷你遊戲', brand:'哥布林尋寶', subtitle:'森林迷你遊戲',
+      languageLabel:'語言', restart:'重新開始', scoreLabel:'分數', livesLabel:'生命',
+      eyebrow:'小小哥布林，大大野心。', headline:'一點點淘氣，<br>滿滿的<em>咖啡。</em>',
+      description:'森林送來了小驚喜。<br>接住咖啡，避開功課，繼續前進！',
+      start:'開始收集', hint:'← → 或 A / D 移動 · P 暫停',
+      touchHint:'在森林內拖曳，或使用下方的方向按鈕',
+      pauseTitle:'休息一下。', resume:'繼續收集', move:'移動', pause:'暫停',
+      chances:'一片森林，三次機會。', coffee:'咖啡', assignments:'功課紙張',
+      lifePenalty:'−1 生命', credit:'忙裏偷閒，玩一會兒',
+      movementLabel:'移動控制', leftLabel:'向左移動', rightLabel:'向右移動',
+      canvasLabel:'哥布林尋寶遊戲。使用左右方向鍵或 A 和 D 移動。接住咖啡，避開功課紙張。按 P 暫停。',
+      livesCount:'{count} 條生命', startAnnouncement:'遊戲開始。接住咖啡得分，避開功課紙張。',
+      coffeeAnnouncement:'接到咖啡！目前分數：{score}。', livesAnnouncement:'剩餘 {count} 條生命。',
+      overEyebrow:'是時候喝杯咖啡了。', overHeadline:'辛苦了，<em>休息一下。</em>',
+      overDescription:'你獲得了 {score} 分。準備好再玩一局嗎？', replay:'再玩一次',
+      overHint:'接住咖啡，避開功課。', overAnnouncement:'遊戲結束。最終分數：{score}。',
+      pauseAnnouncement:'遊戲已暫停。', resumeAnnouncement:'遊戲繼續。',
+      damageFeedback:'−1 生命'
+    }
+  };
+  let language='en', lastAnnouncement=null;
+  try { const saved=localStorage.getItem('goblin-gold-language'); if(Object.hasOwn(translations,saved))language=saved; } catch { /* Storage can be disabled for local files. */ }
+  function translate(key,values={}) { return (translations[language][key] ?? translations.en[key]).replace(/\{(\w+)\}/g,(_,name)=>String(values[name]??'')); }
+  function renderLanguage() {
+    document.documentElement.lang=language;document.title=translate('title');
+    document.querySelectorAll('[data-i18n]').forEach(el=>el.textContent=translate(el.dataset.i18n));
+    document.querySelectorAll('[data-i18n-aria]').forEach(el=>el.setAttribute('aria-label',translate(el.dataset.i18nAria)));
+    $('languageEnglish').setAttribute('aria-pressed',String(language==='en'));
+    $('languageChinese').setAttribute('aria-pressed',String(language==='zh-Hant'));
+    const over=state==='over';
+    $('eyebrow').textContent=translate(over?'overEyebrow':'eyebrow');
+    // These HTML strings are fixed local translations, never user input.
+    $('headline').innerHTML=translate(over?'overHeadline':'headline');
+    $('description').innerHTML=translate(over?'overDescription':'description',{score});
+    $('startLabel').textContent=translate(over?'replay':'start');
+    $('hint').textContent=translate(over?'overHint':isTouch?'touchHint':'hint');
+    updateHUD();
+    if(lastAnnouncement)$('announcement').textContent=translate(lastAnnouncement.key,lastAnnouncement.values);
+  }
+  function setLanguage(value) {
+    if(!Object.hasOwn(translations,value))return;
+    language=value;try { localStorage.setItem('goblin-gold-language',language); } catch { /* Switching still works without storage. */ }
+    keys.clear();player.moving=0;dragging=false;renderLanguage();
+    if(state==='playing')canvas.focus();
+  }
   // A deterministic forest, drawn entirely from paths and basic shapes.
   let seed = 41;
   function random() { seed = (seed * 16807) % 2147483647; return (seed-1)/2147483646; }
@@ -168,18 +248,15 @@
     for(let row=0;row<4;row++)ctx.fillRect(-9,-4+row*5,row===3?10:19,1.5);
     ctx.restore();
   }
-  function updateHUD() { $('score').textContent=score; $('lives').textContent='♥'.repeat(lives)+'♡'.repeat(3-lives);$('lives').setAttribute('aria-label',lives+' lives'); }
-  function announce(message) { $('announcement').textContent=message; }
-  function start() {state='playing';score=0;lives=3;spawnIn=.6;objects=[];feedback=[];keys.clear();dragging=false;player.x=400;player.moving=0;player.hurtTimer=0;player.chewTimer=0;$('overlay').hidden=true;$('pause').hidden=true;updateHUD();announce('Game started. Catch coffee for points and avoid assignment papers.');canvas.focus();}
+  function updateHUD() { $('score').textContent=score; $('lives').textContent='♥'.repeat(lives)+'♡'.repeat(3-lives);$('lives').setAttribute('aria-label',translate('livesCount',{count:lives})); }
+  function announce(key,values={}) { lastAnnouncement={key,values};$('announcement').textContent=translate(key,values); }
+  function start() {state='playing';score=0;lives=3;spawnIn=.6;objects=[];feedback=[];keys.clear();dragging=false;player.x=400;player.moving=0;player.hurtTimer=0;player.chewTimer=0;$('overlay').hidden=true;$('pause').hidden=true;updateHUD();announce('startAnnouncement');canvas.focus();}
   function finish() {
     state='over';keys.clear();dragging=false;player.moving=0;
-    $('eyebrow').textContent='TIME FOR A COFFEE BREAK.';
-    $('headline').innerHTML='A well-earned <em>break.</em>';
-    $('description').textContent='You collected '+score+' points. Ready for another round?';
-    $('startLabel').textContent='Play again';$('hint').textContent='Catch the coffee. Dodge the assignments.';
-    $('overlay').hidden=false;announce('Game over. Final score: '+score+'.');$('start').focus();
+    renderLanguage();
+    $('overlay').hidden=false;announce('overAnnouncement',{score});$('start').focus();
   }
-  function pause() {if(state!=='playing' && state!=='paused')return;state=state==='playing'?'paused':'playing';keys.clear();player.moving=0;$('pause').hidden=state!=='paused';if(state==='paused')$('resume').focus();else canvas.focus();}
+  function pause() {if(state!=='playing' && state!=='paused')return;state=state==='playing'?'paused':'playing';keys.clear();player.moving=0;$('pause').hidden=state!=='paused';announce(state==='paused'?'pauseAnnouncement':'resumeAnnouncement');if(state==='paused')$('resume').focus();else canvas.focus();}
   function update(dt) {
     player.hurtTimer=Math.max(0,player.hurtTimer-dt);
     player.chewTimer=Math.max(0,player.chewTimer-dt);
@@ -211,11 +288,11 @@
         if(o.type==='coffee'){
           score+=10;player.chewTimer=.3;
           feedback.push({x:o.x,y:o.y,text:'+10',color:'#f6cc6b',life:.8});
-          updateHUD();announce('Coffee collected. Score: '+score+'.');
+          updateHUD();announce('coffeeAnnouncement',{score});
         }else if(player.hurtTimer===0){
           lives--;player.hurtTimer=1.2;
-          feedback.push({x:o.x,y:o.y,text:'−1 life',color:'#e5a193',life:.8});
-          updateHUD();announce(lives+' lives remaining.');
+          feedback.push({x:o.x,y:o.y,key:'damageFeedback',color:'#e5a193',life:.8});
+          updateHUD();announce('livesAnnouncement',{count:lives});
           if(lives===0){finish();break;}
         }
       }else if(o.y>H+32)objects.splice(i,1);
@@ -225,7 +302,7 @@
     if(state==='ready'){coin(157,154,14,t);coin(674,258,12,t+1);rock(104,288,17,.3);goblin(400,ground,t,true);}
     else {objects.forEach(o=>o.type==='coffee'?coffee(o.x,o.y,o.angle):assignment(o.x,o.y,o.angle));goblin(player.x,player.y,t);}
     ctx.save();ctx.font='bold 18px system-ui';ctx.textAlign='center';
-    feedback.forEach(f=>{ctx.globalAlpha=Math.min(1,f.life*2);ctx.fillStyle=f.color;ctx.fillText(f.text,f.x,f.y-20);});ctx.restore();
+    feedback.forEach(f=>{ctx.globalAlpha=Math.min(1,f.life*2);ctx.fillStyle=f.color;ctx.fillText(f.key?translate(f.key):f.text,f.x,f.y-20);});ctx.restore();
     // A gentle foreground vignette keeps the clearing in focus.
     const shade=ctx.createLinearGradient(0,0,W,0);shade.addColorStop(0,'#071b2444');shade.addColorStop(.2,'#071b2400');shade.addColorStop(.8,'#071b2400');shade.addColorStop(1,'#071b2444');ctx.fillStyle=shade;ctx.fillRect(0,0,W,H);
   }
@@ -236,14 +313,15 @@
   window.addEventListener('blur',()=>{keys.clear();if(state==='playing')pause();});
   document.addEventListener('visibilitychange',()=>{if(document.hidden&&state==='playing')pause();});
   $('start').addEventListener('click',start);$('restart').addEventListener('click',start);$('resume').addEventListener('click',pause);
+  $('languageEnglish').addEventListener('click',()=>setLanguage('en'));
+  $('languageChinese').addEventListener('click',()=>setLanguage('zh-Hant'));
   let dragging=false;
   function movePointer(e){if(state!=='playing')return;const rect=canvas.getBoundingClientRect();player.x=clampPlayer((e.clientX-rect.left)*W/rect.width);}
   canvas.addEventListener('pointerdown',e=>{if(state!=='playing')return;dragging=true;canvas.setPointerCapture(e.pointerId);movePointer(e);});
   canvas.addEventListener('pointermove',e=>{if(dragging)movePointer(e);});
   canvas.addEventListener('pointerup',()=>dragging=false);canvas.addEventListener('pointercancel',()=>dragging=false);
   [['left','left'],['right','right']].forEach(([id,dir])=>{const button=$(id);button.addEventListener('pointerdown',e=>{e.preventDefault();if(state==='playing'){keys.add(dir);button.setPointerCapture(e.pointerId);}});['pointerup','pointercancel','lostpointercapture'].forEach(event=>button.addEventListener(event,()=>keys.delete(dir)));});
-  if(window.matchMedia('(pointer:coarse)').matches)$('hint').textContent='Drag in the forest or use the arrow buttons below';
-  updateHUD();requestAnimationFrame(frame);
+  renderLanguage();requestAnimationFrame(frame);
 })();
 </script>
 </body>
